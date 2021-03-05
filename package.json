@@ -114,14 +114,17 @@
     ]
   },
   "build": {
-  "icon": "static/favicon.png",
-  "productName": "Aurelia and Electron App",
-  "files": [
-    "build/**/*",
-    "main.js"
-  ],
-  "win": {},
-  "linux": {},
-  "mac": {}
+    "appId": "com.yourdomain.app",
+    "icon": "static/favicon.png",
+    "productName": "Aurelia and Electron Boilerplate App",
+    "files": [
+      "build/**/*",
+      "main.js"
+    ],
+    "win": {},
+    "linux": {},
+    "mac": {
+      "icon": "static/App.icns"
+    }
   }
 }
