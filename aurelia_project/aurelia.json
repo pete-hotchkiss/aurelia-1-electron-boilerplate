@@ -30,6 +30,6 @@
     "open": false,
     "port": 8080,
     "host": "localhost",
-    "output": "dist"
+    "output": "build"
   }
 }
