@@ -1,3 +1,4 @@
+import { ipcRenderer } from "electron";
 import { autoinject } from "aurelia-framework";
 import { Router, RouterConfiguration, NavModel } from "aurelia-router";
 import { PLATFORM } from "aurelia-pal";
@@ -11,8 +12,9 @@ export class App {
 
   constructor() {
     this.message = 'how dooze!';
-    this.routes = [{
-      route: [ "", "home" ],
+    this.routes = [
+    {
+      route: ["", "app-home"],
       name: "home-panel",
       moduleId: PLATFORM.moduleName("views/home-panel"),
       nav: true,
@@ -24,7 +26,7 @@ export class App {
       }
     },
     {
-      route: "a",
+      route: "app-loading",
       name: "panel-a",
       moduleId: PLATFORM.moduleName("views/panel-a"),
       nav: true,
@@ -35,6 +37,18 @@ export class App {
         sortOrder: 1,
       }
     }];
+
+    console.log("where..", globalThis.electron);
+
+    ipcRenderer.on(
+      "onLoadingWindowLoaded",
+      (event: any, ...args) => this.onLoadingWindowLoaded(args));
+  }
+
+  onLoadingWindowLoaded(args: {route: string}[]) {
+    /** event gets an array of arguments which detail the */
+    /** route the app should navigate to */
+    this.router.navigate(args[0].route);
   }
 
   configureRouter(config: RouterConfiguration, router: Router) {

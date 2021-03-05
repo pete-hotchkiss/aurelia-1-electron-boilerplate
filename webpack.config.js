@@ -29,6 +29,7 @@ const cssRules = [
 
 
 module.exports = ({ production } = {}, {extractCss, analyze, tests, hmr, port, host } = {}) => ({
+  target: "electron-renderer",
   resolve: {
     extensions: ['.ts', '.js'],
     modules: [srcDir, 'node_modules'],

@@ -1,8 +1,9 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const serve = require("electron-serve");
 const loadURL = serve({ directory: "build" });
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -17,8 +18,15 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    backgroundColor: "#339a6a",
     webPreferences: {
+      odeIntegration: false,
+      nodeIntegrationInWorker: true,
+      contextIsolation: false,
       nodeIntegration: true,
+      webSecurity: false,
+      worldSafeExecuteJavaScript: true,
+      preload: path.join(__dirname, 'preload.js')
     },
     // Use this in development mode.
     icon: isDev()
@@ -57,12 +65,76 @@ function createWindow() {
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
   });
+
+  //  main window is up and running - so we can kill the loading window
+  mainWindow.webContents.on('did-finish-load', () => {
+    if (loadingScreen) {
+      loadingScreen.close();
+    }
+    mainWindow.show();
+    mainWindow.webContents.send(
+      "onLoadingWindowLoaded",
+      { route: "app-home" }
+    );
+
+  });
 }
+
+let loadingScreen;
+function createLoadingScreen() {
+  loadingScreen = new BrowserWindow(
+    Object.assign({
+      width: 800,
+      height: 800,
+      frame: false,
+      transparent: true,
+      webPreferences: {
+        nodeIntegration: false,
+        nodeIntegrationInWorker: true,
+        contextIsolation: false,
+        nodeIntegration: true,
+        webSecurity: false,
+        worldSafeExecuteJavaScript: true,
+        preload: path.join(__dirname, 'preload.js')
+      }
+    })
+  )
+
+  console.log("preload", path.join(__dirname, 'preload.js'));
+
+  loadingScreen.setResizable(false);
+  console.log("path", `file://${__dirname}/src/assets/loading/loading.html`);
+  // loadingScreen.loadURL(
+  //   'file://' + __dirname + 'src/assets/loading/loading.html'
+  // );
+
+  if (isDev()) {
+    loadingScreen.loadURL("http://localhost:8080");
+  } else {
+    loadURL(loadingScreen);
+  }
+
+  loadingScreen.on('closed', () => (loadingScreen = null));
+  loadingScreen.webContents.on('did-finish-load', () => {
+    loadingScreen.show();
+    loadingScreen.webContents.send(
+      "onLoadingWindowLoaded",
+      { route: "app-loading" }
+    );
+  });
+}
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createLoadingScreen();
+
+  setTimeout(() => {
+    createWindow();
+  }, 12000);
+});
 
 // Quit when all windows are closed.
 app.on("window-all-closed", function () {
