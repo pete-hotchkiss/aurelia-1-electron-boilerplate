@@ -1,33 +1,45 @@
 # `aurelia-electron-builder-boilerplate`
 
-This project is bootstrapped by [aurelia-cli](https://github.com/aurelia/cli).
+A boilerplate scaffolding for using Aurelia 1 (2 isn't stable enough to use in anger yet) and Electron.
 
-For more information, go to https://aurelia.io/docs/cli/webpack
+## Why I built this.
+Largely out of frustration in there are little to no other stable templates/boilerplates out there to do this. At least not ones that allow for using `typescript` and `sass`.
 
-## Run dev app
+Others I found would either barf when using `sass` for styling, or were limited to compiling native `.js` files.
 
-Run `npm start`, then open `http://localhost:8080`
+As this boilerplate builds the app in a `dev` environment to use [`webpack-dev-server`](https://github.com/webpack/webpack-dev-server#readme) it also means that as well as using `Jest` to do unit tests, there is a friendly entry point for `Cypress.io` should you want to use that.
 
-You can change the standard webpack configurations from CLI easily with something like this: `npm start -- --open --port 8888`. However, it is better to change the respective npm scripts or `webpack.config.js` with these options, as per your need.
+>**TODO**. Add a separate fork of this in time to show an example of cypress running
 
-To enable Webpack Bundle Analyzer, do `npm run analyze` (production build).
+The Aurelia app this builds has a basic example UI with some simple routing in place
 
-To enable hot module reload, do `npm start -- --hmr`.
+### Using
+Clone the repos in the normal way so you have a locl version of this in place
 
-To change dev server port, do `npm start -- --port 8888`.
+```console
+yarn install // or npm if your prefer
+```
 
-To change dev server host, do `npm start -- --host 127.0.0.1`
+will install all the dependencies.
 
-**PS:** You could mix all the flags as well, `npm start -- --host 127.0.0.1 --port 7070 --open --hmr`
+#### local dev environment  
 
-For long time aurelia-cli user, you can still use `au run` with those arguments like `au run --env prod --open --hmr`. But `au run` now simply executes `npm start` command.
+```
+yarn electron-dev
+```
+Once  compiled if you want browser access to the same app run-time open your browser to `http://localhost:8080`
 
-## Build for production
+### package build
 
-Run `npm run build`, or the old way `au build --env prod`.
+```
+yarn electron-pack
+```
 
-## Unit tests
+Will build out the packaged electron app too the `dist` folder
 
-Run `au test` (or `au jest`).
+>**TODO** expand on the configs/build settings
 
-To run in watch mode, `au test --watch` or `au jest --watch`.
+
+
+#### credits
+Core portions of the electron build side expand on Soulehshaikh99 work (here)[https://github.com/soulehshaikh99/create-aurelia-electron-app] 
